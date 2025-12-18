@@ -38,6 +38,33 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/main_LBL_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginRight="@dimen/default_margin"
+        android:textSize="@dimen/time_text_size"
+        android:textStyle="bold"
+        tools:text="000" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/main_LBL_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:textSize="@dimen/time_text_size"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginRight="@dimen/default_margin"
+        android:textStyle="bold"
+        android:textColor="@color/text"
+        tools:text="00:00:00" />
+
+
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/gridContainer"
         android:orientation="vertical"
@@ -194,14 +221,14 @@
         android:gravity="center"
         android:padding="12dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLeft"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="56dp"
             android:text="◀" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRight"
             android:layout_width="0dp"
             android:layout_weight="1"
