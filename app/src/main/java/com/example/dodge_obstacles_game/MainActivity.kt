@@ -106,11 +106,13 @@ class MainActivity : AppCompatActivity() {
 
         btnLeft.setOnClickListener {
             gameManager.movePlayerLeft()
+            checkDamage()
             refreshUI()
         }
 
         btnRight.setOnClickListener {
             gameManager.movePlayerRight()
+            checkDamage()
             refreshUI()
         }
 
@@ -142,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                 updateTimerUI(now)
 
                 gameManager.nextTurn()
+                checkDamage()
 
                 if (gameManager.lives < previousHearts) {
                     notifyLifeLost()
@@ -214,6 +217,13 @@ class MainActivity : AppCompatActivity() {
         for (i in main_IMG_hearts.indices) {
             main_IMG_hearts[i].visibility =
                 if (i < gameManager.lives) View.VISIBLE else View.INVISIBLE
+        }
+    }
+
+    private fun checkDamage() {
+        if (gameManager.consumeDamageFlag()) {
+            notifyLifeLost()
+            previousHearts = gameManager.lives
         }
     }
 

@@ -13,6 +13,9 @@ class GameManager(val lifeCount: Int = 3) {
     var playerCol: Int = 1
         private set
 
+    var damageTakenThisTurn = false
+        private set
+
     private val enemies = mutableListOf<Enemy>()
 
     private val enemyDrawables = listOf(
@@ -27,11 +30,39 @@ class GameManager(val lifeCount: Int = 3) {
         get() = lives <= 0
 
     fun movePlayerLeft() {
-        if (playerCol > 0) playerCol--
+        if (playerCol > 0) {
+            playerCol--
+            checkPlayerCollision()
+        }
     }
 
     fun movePlayerRight() {
-        if (playerCol < 2) playerCol++
+        if (playerCol < 2) {
+            playerCol++
+            checkPlayerCollision()
+        }
+    }
+
+    private fun checkPlayerCollision() {
+        val hitEnemy = enemies.firstOrNull {
+            it.row == 4 && it.col == playerCol
+        }
+
+        if (hitEnemy != null) {
+            takeDamage()
+            enemies.remove(hitEnemy)
+        }
+    }
+
+    private fun takeDamage() {
+        lives--
+        damageTakenThisTurn = true
+    }
+
+    fun consumeDamageFlag(): Boolean {
+        val result = damageTakenThisTurn
+        damageTakenThisTurn = false
+        return result
     }
 
     fun nextTurn() {
@@ -50,7 +81,7 @@ class GameManager(val lifeCount: Int = 3) {
             enemy.row++
 
             if (enemy.row == 4 && enemy.col == playerCol) {
-                lives--
+                takeDamage()
             } else if (enemy.row < 5) {
                 newEnemies.add(enemy)
             } else {
@@ -60,6 +91,7 @@ class GameManager(val lifeCount: Int = 3) {
 
         enemies.clear()
         enemies.addAll(newEnemies)
+        checkPlayerCollision()
     }
 
     fun getEnemies(): List<Enemy> = enemies.toList()
