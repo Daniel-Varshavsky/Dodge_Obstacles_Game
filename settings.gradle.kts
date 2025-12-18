@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Dodge_Obstacles_Game"
+rootProject.name = "Pikachu_Run"
 include(":app")
  
