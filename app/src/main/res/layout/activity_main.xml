@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:layoutDirection="ltr"
+    android:textDirection="ltr">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/heartsRow"
@@ -48,7 +50,8 @@
         android:layout_marginRight="@dimen/default_margin"
         android:textSize="@dimen/time_text_size"
         android:textStyle="bold"
-        tools:text="000" />
+        android:textColor="@color/gray"
+        tools:text="000"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/main_LBL_time"
@@ -99,6 +102,18 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_0_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_0_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- Row 1 -->
@@ -122,6 +137,18 @@
                 android:scaleType="centerInside"/>
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/cell_1_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_1_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_1_4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -153,6 +180,18 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_2_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_2_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- Row 3 -->
@@ -180,9 +219,21 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_3_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_3_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <!-- Row 4 (bottom, player row) -->
+        <!-- Row 4 -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/row4"
             android:layout_width="match_parent"
@@ -200,10 +251,178 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_4_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_4_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_4_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- Row 5 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/row5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_5_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_5_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_5_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_5_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_5_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- Row 6 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/row6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_6_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_6_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_6_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_6_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_6_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- Row 7 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/row7"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_7_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_7_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_7_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_7_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_7_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- Row 8 (bottom, player row) -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/row8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_8_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_8_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_8_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/pikachu_walk001"/>
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/cell_4_2"
+                android:id="@+id/cell_8_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cell_8_4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -226,6 +445,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="56dp"
+            android:backgroundTint="@color/purple"
+            android:textColor="@color/white"
             android:text="◀" />
 
         <com.google.android.material.button.MaterialButton
@@ -233,6 +454,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="56dp"
+            android:backgroundTint="@color/purple"
+            android:textColor="@color/white"
             android:text="▶" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -12,6 +12,7 @@
         android:id="@+id/score_LBL_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/gray"
         tools:text="Game Over!\nScore: 0\nTime: 00:00:00"
         android:layout_centerInParent="true"
         android:textSize="@dimen/score_text_size"
@@ -26,6 +27,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/default_margin"
+        android:backgroundTint="@color/purple"
+        android:textColor="@color/white"
         android:text="Back to Main Menu" />
 
     <com.google.android.material.button.MaterialButton
@@ -34,5 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/score_BTN_back"
         android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/purple"
+        android:textColor="@color/white"
         android:text="New Game" />
 </RelativeLayout>

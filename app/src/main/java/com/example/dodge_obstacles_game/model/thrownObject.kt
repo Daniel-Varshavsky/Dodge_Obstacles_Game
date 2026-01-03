@@ -1,7 +1,8 @@
 package com.example.dodge_obstacles_game.model
 
-data class Enemy(
+data class thrownObject(
     var row: Int,
     val col: Int,
-    val drawableRes: Int
+    val drawableRes: Int,
+    val type: thrownType
 )

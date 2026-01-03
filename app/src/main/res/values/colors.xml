@@ -2,8 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#FF666666</color>
     <color name="heart_color">#D7443E</color>
     <color name="background">#25db56</color>
     <color name="text">#000000</color>
     <color name="blue_200">#90CAF9</color>
+    <color name="purple">#7d1aba</color>
 </resources>
