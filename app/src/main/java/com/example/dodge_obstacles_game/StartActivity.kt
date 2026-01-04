@@ -67,15 +67,51 @@ class StartActivity : AppCompatActivity() {
                     else
                         Constants.CONTROL_MODES.BUTTONS
 
-                sp.putString(
-                    Constants.SP_KEYS.CONTROL_MODE,
-                    selectedMode
-                )
+                sp.putString(Constants.SP_KEYS.CONTROL_MODE, selectedMode)
+                dialog.dismiss()
 
+                // 🔽 Only show difficulty for BUTTONS
+                if (selectedMode == Constants.CONTROL_MODES.BUTTONS) {
+                    showDifficultyDialog()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showDifficultyDialog() {
+
+        val sp = SharedPreferencesManager.getInstance()
+
+        val currentDifficulty = sp.getString(
+            Constants.SP_KEYS.DIFFICULTY,
+            Constants.DIFFICULTY.NORMAL
+        )
+
+        val options = arrayOf("Easy", "Normal", "Hard")
+
+        val checkedItem = when (currentDifficulty) {
+            Constants.DIFFICULTY.EASY -> 0
+            Constants.DIFFICULTY.HARD -> 2
+            else -> 1
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Choose difficulty")
+            .setSingleChoiceItems(options, checkedItem) { dialog, which ->
+
+                val difficulty = when (which) {
+                    0 -> Constants.DIFFICULTY.EASY
+                    2 -> Constants.DIFFICULTY.HARD
+                    else -> Constants.DIFFICULTY.NORMAL
+                }
+
+                sp.putString(Constants.SP_KEYS.DIFFICULTY, difficulty)
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
+
 
 }

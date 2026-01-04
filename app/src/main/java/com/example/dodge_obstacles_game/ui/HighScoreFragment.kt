@@ -46,7 +46,7 @@ class HighScoreFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = layoutInflater.inflate(R.layout.item_high_score, parent, false)
+            val view = layoutInflater.inflate(R.layout.high_score_row, parent, false)
             return ViewHolder(view)
         }
 

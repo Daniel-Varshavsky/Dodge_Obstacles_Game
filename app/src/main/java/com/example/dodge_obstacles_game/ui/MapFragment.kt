@@ -10,7 +10,7 @@ import com.example.dodge_obstacles_game.R
 
 class MapFragment : Fragment() {
 
-    private lateinit var map_LBL_title: MaterialTextView
+    private lateinit var map_LBL_coords: MaterialTextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,11 +23,11 @@ class MapFragment : Fragment() {
     }
 
     private fun findViews(v: View) {
-        map_LBL_title = v.findViewById(R.id.map_LBL_title)
+        map_LBL_coords = v.findViewById(R.id.map_LBL_coords)
     }
 
     fun zoom(lat: Double, lon: Double) {
-        map_LBL_title.text = buildString {
+        map_LBL_coords.text = buildString {
             append("📍\n")
             append(lat)
             append(",\n")

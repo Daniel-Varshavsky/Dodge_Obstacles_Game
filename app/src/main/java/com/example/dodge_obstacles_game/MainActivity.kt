@@ -84,6 +84,9 @@ class MainActivity : AppCompatActivity() {
         // ✅ READ CONTROL MODE FROM PREFERENCES
         controlMode = SharedPreferencesManager.getInstance()
             .getString(Constants.SP_KEYS.CONTROL_MODE, Constants.CONTROL_MODES.BUTTONS)
+        if (controlMode == Constants.CONTROL_MODES.BUTTONS) {
+            applyButtonDifficulty()
+        }
 
         findViews()
         gameManager = GameManager(main_IMG_hearts.size)
@@ -161,6 +164,21 @@ class MainActivity : AppCompatActivity() {
             refreshUI()
         }
     }
+
+    private fun applyButtonDifficulty() {
+        val difficulty = SharedPreferencesManager.getInstance()
+            .getString(
+                Constants.SP_KEYS.DIFFICULTY,
+                Constants.DIFFICULTY.NORMAL
+            )
+
+        currentDelay = when (difficulty) {
+            Constants.DIFFICULTY.EASY -> MAX_DELAY
+            Constants.DIFFICULTY.HARD -> MIN_DELAY
+            else -> Constants.Timer.DELAY
+        }
+    }
+
 
     private fun enableTiltControls() {
         btnLeft.visibility = View.INVISIBLE

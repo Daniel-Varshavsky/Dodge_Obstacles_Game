@@ -182,21 +182,22 @@ class ScoreActivity : AppCompatActivity() {
             .setView(input)
             .setCancelable(true)
             .setPositiveButton("Save") { _, _ ->
-                val name = input.text.toString().trim()
+                var name = input.text.toString().trim()
 
-                if (name.isNotEmpty()) {
-                    SharedPreferencesManager
-                        .getInstance()
-                        .saveLeaderboardEntry(
-                            leaderboardEntry(
-                                name = name,
-                                score = score,
-                                time = time,
-                                latitude = currentLatitude,
-                                longitude = currentLongitude
-                            )
-                        )
+                if (name.isEmpty()) {
+                    name = ""
                 }
+                SharedPreferencesManager
+                    .getInstance()
+                    .saveLeaderboardEntry(
+                        leaderboardEntry(
+                            name = name,
+                            score = score,
+                            time = time,
+                            latitude = currentLatitude,
+                            longitude = currentLongitude
+                        )
+                    )
             }
             .setNegativeButton("Cancel", null)
             .show()

@@ -10,9 +10,21 @@
         android:id="@+id/map_LBL_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Map"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/map_LBL_coords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textSize="@dimen/text_size"
         android:gravity="center"
+        android:textColor="@android:color/white"
         tools:text="@string/this_is_map_fragment" />
 
 </RelativeLayout>

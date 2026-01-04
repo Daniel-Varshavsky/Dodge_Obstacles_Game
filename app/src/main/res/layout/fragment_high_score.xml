@@ -6,11 +6,101 @@
     android:background="@color/red_300"
     tools:context=".ui.HighScoreFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/highScore_RV"
+    <!-- Title -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/highScore_LBL_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Top 10 Scores"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Instruction -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/highScore_LBL_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click a row in the table to show coordinates on the map.\nAlso, you can scroll the table."
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:layout_below="@id/highScore_LBL_title"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Table Container -->
+    <LinearLayout
+        android:id="@+id/highScore_tableContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:padding="@dimen/default_padding" />
+        android:layout_below="@id/highScore_LBL_hint"
+        android:layout_margin="12dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_table_border">
+
+        <!-- Header Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Score"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/white"/>
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/highScore_RV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
