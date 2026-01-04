@@ -6,4 +6,6 @@
     <dimen name="default_margin">8dp</dimen>
     <dimen name="heart_size">40dp</dimen>
     <dimen name="score_text_size">70sp</dimen>
+    <dimen name="default_padding">16dp</dimen>
+    <dimen name="text_size">32sp</dimen>
 </resources>

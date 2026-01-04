@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Pikachu_Run</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="please_enter_location">Please Enter Location</string>
+    <string name="send">Send</string>
+    <string name="this_is_map_fragment">This Is Map Fragment</string>
 </resources>

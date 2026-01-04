@@ -5,6 +5,8 @@ class Constants {
     object SP_KEYS {
         const val DATA_FILE = "GAME_PREFS"
         const val CONTROL_MODE = "CONTROL_MODE"
+
+        const val LEADERBOARD = "LEADERBOARD"
     }
 
     object CONTROL_MODES {

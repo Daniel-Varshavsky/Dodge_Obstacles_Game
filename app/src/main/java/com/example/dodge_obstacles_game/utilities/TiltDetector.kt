@@ -37,12 +37,12 @@ class TiltDetector(
             if (now - lastTiltTime < tiltCooldown) return
 
             when {
-                x < -tiltThreshold -> {
+                x > tiltThreshold -> {
                     lastTiltTime = now
                     tiltCallback.onTiltLeft()
                 }
 
-                x > tiltThreshold -> {
+                x < -tiltThreshold -> {
                     lastTiltTime = now
                     tiltCallback.onTiltRight()
                 }

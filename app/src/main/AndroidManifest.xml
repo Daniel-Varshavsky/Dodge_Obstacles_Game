@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:name=".App"
@@ -27,6 +29,7 @@
             android:screenOrientation="portrait"
             android:exported="true"/>
         <activity android:name=".ScoreActivity" />
+        <activity android:name=".LeaderboardActivity" />
     </application>
 
 </manifest>

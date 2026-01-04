@@ -13,6 +13,7 @@ class StartActivity : AppCompatActivity() {
 
     private lateinit var start_BTN_play: MaterialButton
     private lateinit var start_BTN_settings: MaterialButton
+    private lateinit var start_BTN_leaderboard: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,12 +26,17 @@ class StartActivity : AppCompatActivity() {
     private fun findViews() {
         start_BTN_play = findViewById(R.id.start_BTN_play)
         start_BTN_settings = findViewById(R.id.start_BTN_settings)
+        start_BTN_leaderboard = findViewById(R.id.start_BTN_leaderboard)
     }
 
     private fun initViews() {
         start_BTN_play.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+        }
+
+        start_BTN_leaderboard.setOnClickListener {
+            startActivity(Intent(this, LeaderboardActivity::class.java))
         }
 
         start_BTN_settings.setOnClickListener {

@@ -37,10 +37,25 @@
         android:paddingEnd="32dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/start_BTN_settings"
+        android:id="@+id/start_BTN_leaderboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/start_BTN_play"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/purple"
+        android:textColor="@color/white"
+        android:text="LEADERBOARD"
+        android:textSize="18sp"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/start_BTN_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_BTN_leaderboard"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/purple"

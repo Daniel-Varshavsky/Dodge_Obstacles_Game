@@ -56,6 +56,8 @@ class GameManager(private val lifeCount: Int = 3) {
     /* ---------------- Game loop ---------------- */
 
     fun nextTurn() {
+        score += 10
+
         spawnObjects()
 
         val updatedObjects = mutableListOf<thrownObject>()
@@ -70,10 +72,6 @@ class GameManager(private val lifeCount: Int = 3) {
 
                 obj.row < GameConfig.ROWS -> {
                     updatedObjects.add(obj)
-                }
-
-                obj.type == thrownType.ENEMY -> {
-                    score++
                 }
             }
         }
