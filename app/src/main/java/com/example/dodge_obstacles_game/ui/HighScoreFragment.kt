@@ -11,6 +11,7 @@ import com.example.dodge_obstacles_game.R
 import com.example.dodge_obstacles_game.model.leaderboardEntry
 import com.example.dodge_obstacles_game.utilities.SharedPreferencesManager
 import com.example.dodge_obstacles_game.interfaces.Callback_HighScoreClicked
+import com.example.dodge_obstacles_game.utilities.Constants
 
 class HighScoreFragment : Fragment() {
 
@@ -20,6 +21,7 @@ class HighScoreFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: HighScoreAdapter
+    private var currentMode = Constants.GAME_MODE.BUTTONS_NORMAL
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,11 +31,38 @@ class HighScoreFragment : Fragment() {
         recyclerView = v.findViewById(R.id.highScore_RV)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        val leaderboard: List<leaderboardEntry> = SharedPreferencesManager.getInstance().getLeaderboard()
-        adapter = HighScoreAdapter(leaderboard)
-        recyclerView.adapter = adapter
+        v.findViewById<View>(R.id.btn_buttons).setOnClickListener {
+            v.findViewById<View>(R.id.highScore_LAY_difficulties).visibility = View.VISIBLE
+        }
+
+        v.findViewById<View>(R.id.btn_tilt).setOnClickListener {
+            loadLeaderboard(Constants.GAME_MODE.TILT)
+            v.findViewById<View>(R.id.highScore_LAY_difficulties).visibility = View.INVISIBLE
+        }
+
+        v.findViewById<View>(R.id.btn_easy).setOnClickListener {
+            loadLeaderboard(Constants.GAME_MODE.BUTTONS_EASY)
+        }
+        v.findViewById<View>(R.id.btn_normal).setOnClickListener {
+            loadLeaderboard(Constants.GAME_MODE.BUTTONS_NORMAL)
+        }
+        v.findViewById<View>(R.id.btn_hard).setOnClickListener {
+            loadLeaderboard(Constants.GAME_MODE.BUTTONS_HARD)
+        }
+
+        // DEFAULT
+        loadLeaderboard(Constants.GAME_MODE.BUTTONS_NORMAL)
 
         return v
+    }
+
+    private fun loadLeaderboard(mode: String) {
+        currentMode = mode
+        val leaderboard =
+            SharedPreferencesManager.getInstance().getLeaderboard(mode)
+
+        adapter = HighScoreAdapter(leaderboard)
+        recyclerView.adapter = adapter
     }
 
     inner class HighScoreAdapter(private val items: List<leaderboardEntry>) :

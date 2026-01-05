@@ -171,11 +171,18 @@ class ScoreActivity : AppCompatActivity() {
         }
     }
 
+
     private fun showNameDialog(score: Int?, time: String?) {
         val input = EditText(this).apply {
             hint = "Enter your name"
             maxLines = 1
         }
+
+        val gameMode = SharedPreferencesManager.getInstance()
+            .getString(
+                Constants.SP_KEYS.GAME_MODE,
+                Constants.GAME_MODE.BUTTONS_NORMAL
+            )
 
         val dialog = MaterialAlertDialogBuilder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
             .setTitle("Save Score")
@@ -190,6 +197,7 @@ class ScoreActivity : AppCompatActivity() {
                 SharedPreferencesManager
                     .getInstance()
                     .saveLeaderboardEntry(
+                        gameMode,
                         leaderboardEntry(
                             name = name,
                             score = score,
@@ -198,6 +206,7 @@ class ScoreActivity : AppCompatActivity() {
                             longitude = currentLongitude
                         )
                     )
+
             }
             .setNegativeButton("Cancel", null)
             .show()

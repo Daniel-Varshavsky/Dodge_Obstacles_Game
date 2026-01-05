@@ -4,20 +4,15 @@ class Constants {
 
     object SP_KEYS {
         const val DATA_FILE = "GAME_PREFS"
-        const val CONTROL_MODE = "CONTROL_MODE"
-        const val DIFFICULTY = "DIFFICULTY"
-        const val LEADERBOARD = "LEADERBOARD"
+        const val GAME_MODE = "GAME_MODE"
+        const val LEADERBOARD_PREFIX = "LEADERBOARD_"
     }
 
-    object CONTROL_MODES {
-        const val BUTTONS = "BUTTONS"
+    object GAME_MODE {
+        const val BUTTONS_EASY = "BUTTONS_EASY"
+        const val BUTTONS_NORMAL = "BUTTONS_NORMAL"
+        const val BUTTONS_HARD = "BUTTONS_HARD"
         const val TILT = "TILT"
-    }
-
-    object DIFFICULTY {
-        const val EASY = "EASY"
-        const val NORMAL = "NORMAL"
-        const val HARD = "HARD"
     }
 
     object GameConfig {

@@ -14,7 +14,7 @@
         android:id="@+id/main_FRAME_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:background="@color/purple_300"
         android:padding="@dimen/default_padding"/>
 

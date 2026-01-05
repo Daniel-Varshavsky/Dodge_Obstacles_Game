@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     private val DELAY_STEP = 100L
 
     // ───────────────── Control Mode ─────────────────
-    private var controlMode = Constants.CONTROL_MODES.BUTTONS
+    private lateinit var gameMode: String
     private lateinit var tiltDetector: TiltDetector
 
     // ───────────────── Animation ─────────────────
@@ -81,12 +81,13 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // ✅ READ CONTROL MODE FROM PREFERENCES
-        controlMode = SharedPreferencesManager.getInstance()
-            .getString(Constants.SP_KEYS.CONTROL_MODE, Constants.CONTROL_MODES.BUTTONS)
-        if (controlMode == Constants.CONTROL_MODES.BUTTONS) {
-            applyButtonDifficulty()
-        }
+        // ✅ READ GAME MODE FROM PREFERENCES
+        gameMode = SharedPreferencesManager.getInstance()
+            .getString(
+                Constants.SP_KEYS.GAME_MODE,
+                Constants.GAME_MODE.BUTTONS_NORMAL
+            )
+
 
         findViews()
         gameManager = GameManager(main_IMG_hearts.size)
@@ -100,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         resumeGame()
 
-        if (controlMode == Constants.CONTROL_MODES.TILT) {
+        if (gameMode == Constants.GAME_MODE.TILT) {
             tiltDetector.start()
         }
     }
@@ -138,11 +139,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        if (controlMode == Constants.CONTROL_MODES.BUTTONS) {
-            enableButtonControls()
-        } else {
-            enableTiltControls()
+        when (gameMode) {
+            Constants.GAME_MODE.TILT -> {
+                enableTiltControls()
+            }
+
+            Constants.GAME_MODE.BUTTONS_EASY -> {
+                currentDelay = MAX_DELAY
+                enableButtonControls()
+            }
+
+            Constants.GAME_MODE.BUTTONS_HARD -> {
+                currentDelay = MIN_DELAY
+                enableButtonControls()
+            }
+
+            else -> { // BUTTONS_NORMAL
+                currentDelay = Constants.Timer.DELAY
+                enableButtonControls()
+            }
         }
+
 
         refreshUI()
     }
@@ -162,20 +179,6 @@ class MainActivity : AppCompatActivity() {
             gameManager.movePlayerRight()
             checkDamage()
             refreshUI()
-        }
-    }
-
-    private fun applyButtonDifficulty() {
-        val difficulty = SharedPreferencesManager.getInstance()
-            .getString(
-                Constants.SP_KEYS.DIFFICULTY,
-                Constants.DIFFICULTY.NORMAL
-            )
-
-        currentDelay = when (difficulty) {
-            Constants.DIFFICULTY.EASY -> MAX_DELAY
-            Constants.DIFFICULTY.HARD -> MIN_DELAY
-            else -> Constants.Timer.DELAY
         }
     }
 

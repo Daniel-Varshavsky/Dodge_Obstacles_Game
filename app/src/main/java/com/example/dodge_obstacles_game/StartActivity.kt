@@ -48,65 +48,40 @@ class StartActivity : AppCompatActivity() {
 
         val sp = SharedPreferencesManager.getInstance()
 
+        val options = arrayOf(
+            "Buttons - Easy",
+            "Buttons - Normal",
+            "Buttons - Hard",
+            "Tilt"
+        )
+
         val currentMode = sp.getString(
-            Constants.SP_KEYS.CONTROL_MODE,
-            Constants.CONTROL_MODES.BUTTONS
+            Constants.SP_KEYS.GAME_MODE,
+            Constants.GAME_MODE.BUTTONS_NORMAL
         )
 
-        val options = arrayOf("Buttons", "Tilt")
-        val checkedItem =
-            if (currentMode == Constants.CONTROL_MODES.TILT) 1 else 0
-
-        AlertDialog.Builder(this)
-            .setTitle("Choose control method")
-            .setSingleChoiceItems(options, checkedItem) { dialog, which ->
-
-                val selectedMode =
-                    if (which == 1)
-                        Constants.CONTROL_MODES.TILT
-                    else
-                        Constants.CONTROL_MODES.BUTTONS
-
-                sp.putString(Constants.SP_KEYS.CONTROL_MODE, selectedMode)
-                dialog.dismiss()
-
-                // 🔽 Only show difficulty for BUTTONS
-                if (selectedMode == Constants.CONTROL_MODES.BUTTONS) {
-                    showDifficultyDialog()
-                }
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun showDifficultyDialog() {
-
-        val sp = SharedPreferencesManager.getInstance()
-
-        val currentDifficulty = sp.getString(
-            Constants.SP_KEYS.DIFFICULTY,
-            Constants.DIFFICULTY.NORMAL
-        )
-
-        val options = arrayOf("Easy", "Normal", "Hard")
-
-        val checkedItem = when (currentDifficulty) {
-            Constants.DIFFICULTY.EASY -> 0
-            Constants.DIFFICULTY.HARD -> 2
+        val checkedItem = when (currentMode) {
+            Constants.GAME_MODE.BUTTONS_EASY -> 0
+            Constants.GAME_MODE.BUTTONS_NORMAL -> 1
+            Constants.GAME_MODE.BUTTONS_HARD -> 2
+            Constants.GAME_MODE.TILT -> 3
             else -> 1
         }
 
-        AlertDialog.Builder(this)
-            .setTitle("Choose difficulty")
+        AlertDialog.Builder(this,
+            com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered
+        )
+            .setTitle("Game Settings")
             .setSingleChoiceItems(options, checkedItem) { dialog, which ->
 
-                val difficulty = when (which) {
-                    0 -> Constants.DIFFICULTY.EASY
-                    2 -> Constants.DIFFICULTY.HARD
-                    else -> Constants.DIFFICULTY.NORMAL
+                val selectedMode = when (which) {
+                    0 -> Constants.GAME_MODE.BUTTONS_EASY
+                    1 -> Constants.GAME_MODE.BUTTONS_NORMAL
+                    2 -> Constants.GAME_MODE.BUTTONS_HARD
+                    else -> Constants.GAME_MODE.TILT
                 }
 
-                sp.putString(Constants.SP_KEYS.DIFFICULTY, difficulty)
+                sp.putString(Constants.SP_KEYS.GAME_MODE, selectedMode)
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel", null)

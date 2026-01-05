@@ -29,7 +29,9 @@
             android:screenOrientation="portrait"
             android:exported="true"/>
         <activity android:name=".ScoreActivity" />
-        <activity android:name=".LeaderboardActivity" />
+        <activity android:name=".LeaderboardActivity"
+            android:screenOrientation="portrait"
+            android:exported="true" />
     </application>
 
 </manifest>

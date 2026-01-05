@@ -41,34 +41,34 @@ class SharedPreferencesManager private constructor(context: Context) {
         return sharedPreferences.getString(key, defaultValue) ?: defaultValue
     }
 
-    fun saveLeaderboardEntry(entry: leaderboardEntry) {
+    fun saveLeaderboardEntry(
+        gameMode: String,
+        entry: leaderboardEntry
+    ) {
         val gson = Gson()
-
         val type = object : TypeToken<MutableList<leaderboardEntry>>() {}.type
-        val currentJson = getString(Constants.SP_KEYS.LEADERBOARD, "[]")
+
+        val key = Constants.SP_KEYS.LEADERBOARD_PREFIX + gameMode
+        val currentJson = getString(key, "[]")
 
         val list: MutableList<leaderboardEntry> =
             gson.fromJson(currentJson, type)
 
         list.add(entry)
 
-        // Sort by score DESC, then time ASC
+        // Sort: score DESC, time DESC (endless runner)
         list.sortWith(
             compareByDescending<leaderboardEntry> { it.score ?: 0 }
                 .thenByDescending { it.time ?: "" }
         )
 
-        // Keep top 10 only
-        val top10 = list.take(10)
-
-        putString(
-            Constants.SP_KEYS.LEADERBOARD,
-            gson.toJson(top10)
-        )
+        putString(key, gson.toJson(list.take(10)))
     }
 
-    fun getLeaderboard(): List<leaderboardEntry> {
-        val json = getString(Constants.SP_KEYS.LEADERBOARD, "[]")
+    fun getLeaderboard(gameMode: String): List<leaderboardEntry> {
+        val key = Constants.SP_KEYS.LEADERBOARD_PREFIX + gameMode
+        val json = getString(key, "[]")
         return Gson().fromJson(json, Array<leaderboardEntry>::class.java).toList()
     }
+
 }
