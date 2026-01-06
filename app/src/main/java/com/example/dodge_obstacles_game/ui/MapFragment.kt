@@ -1,39 +1,74 @@
 package com.example.dodge_obstacles_game.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.textview.MaterialTextView
+import androidx.fragment.app.Fragment
 import com.example.dodge_obstacles_game.R
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
-class MapFragment : Fragment() {
+class MapFragment : Fragment(), OnMapReadyCallback {
 
-    private lateinit var map_LBL_coords: MaterialTextView
+    private var googleMap: GoogleMap? = null
+    private var pendingLocation: LatLng? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val v: View = inflater.inflate(R.layout.fragment_map, container, false)
-        findViews(v)
-        return v
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_map, container, false)
+
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_container)
+                    as SupportMapFragment
+
+        mapFragment.getMapAsync(this)
+
+        return view
     }
 
-    private fun findViews(v: View) {
-        map_LBL_coords = v.findViewById(R.id.map_LBL_coords)
-    }
+    override fun onMapReady(map: GoogleMap) {
+        googleMap = map
+        googleMap?.uiSettings?.isZoomControlsEnabled = true
 
-    fun zoom(lat: Double, lon: Double) {
-        map_LBL_coords.text = buildString {
-            append("📍\n")
-            append(lat)
-            append(",\n")
-            append(lon)
+        // If zoom() was called before map was ready
+        pendingLocation?.let {
+            showLocation(it)
+            pendingLocation = null
         }
     }
 
+    /**
+     * Called from HighScoreFragment
+     */
+    fun zoom(lat: Double, lon: Double) {
+        val location = LatLng(lat, lon)
 
+        if (googleMap == null) {
+            pendingLocation = location
+        } else {
+            showLocation(location)
+        }
+    }
+
+    private fun showLocation(location: LatLng) {
+        googleMap?.clear()
+
+        googleMap?.addMarker(
+            MarkerOptions()
+                .position(location)
+                .title("High Score Location")
+        )
+
+        googleMap?.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(location, 15f)
+        )
+    }
 }

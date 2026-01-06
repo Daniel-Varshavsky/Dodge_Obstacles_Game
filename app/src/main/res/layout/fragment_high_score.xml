@@ -46,13 +46,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Buttons"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/purple"
+            android:textColor="@color/white"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_tilt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tilt"/>
+            android:text="Tilt"
+            android:backgroundTint="@color/purple"
+            android:textColor="@color/white"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -69,21 +73,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Easy"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/purple"
+            android:textColor="@color/white"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Normal"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/purple"
+            android:textColor="@color/white"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_hard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hard"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/purple"
+            android:textColor="@color/white"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -95,9 +105,11 @@
         android:layout_below="@id/highScore_LAY_difficulties"
         android:layout_margin="12dp"
         android:orientation="vertical"
-        android:background="@drawable/bg_table_border">
+        android:background="@drawable/bg_table_border"
+        android:padding="2dp"
+        android:clipToPadding="false">
 
-        <!-- Header Row -->
+    <!-- Header Row -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -153,7 +165,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            tools:listitem="@layout/high_score_row"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

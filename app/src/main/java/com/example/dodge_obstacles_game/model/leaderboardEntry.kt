@@ -6,4 +6,8 @@ data class leaderboardEntry(
     val time: String?,
     val latitude: Double? = null,
     val longitude: Double? = null
-)
+) {
+
+    fun hasLocation(): Boolean =
+        latitude != null && longitude != null
+}

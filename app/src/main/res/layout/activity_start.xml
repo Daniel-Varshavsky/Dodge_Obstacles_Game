@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/start_root"
     android:layout_width="match_parent"
@@ -74,7 +73,7 @@
         android:layout_marginBottom="20dp"
         android:text="This game is not affiliated with Nintendo, Game Freak, the Pokemon company, or the Pokemon franchise in any way. Please don't sue me."
         android:textSize="15sp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textAlignment="center" />
 
 </RelativeLayout>

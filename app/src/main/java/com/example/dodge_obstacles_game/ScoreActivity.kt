@@ -19,7 +19,6 @@ import com.example.dodge_obstacles_game.utilities.SharedPreferencesManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Looper
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
