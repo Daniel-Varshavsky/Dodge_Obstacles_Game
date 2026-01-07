@@ -14,11 +14,16 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.dodge_obstacles_game.animations.playerAnimations.pikachuFrames
 import com.example.dodge_obstacles_game.logic.GameManager
 import com.example.dodge_obstacles_game.utilities.Constants
 import com.example.dodge_obstacles_game.utilities.SharedPreferencesManager
 import com.example.dodge_obstacles_game.utilities.TimeFormatter
 import com.example.dodge_obstacles_game.interfaces.TiltCallback
+import com.example.dodge_obstacles_game.model.enemyState
+import com.example.dodge_obstacles_game.model.gamePhase
+import com.example.dodge_obstacles_game.model.thrownObject
+import com.example.dodge_obstacles_game.model.thrownType
 import com.example.dodge_obstacles_game.utilities.SignalManager
 import com.example.dodge_obstacles_game.utilities.TiltDetector
 import com.google.android.material.button.MaterialButton
@@ -56,17 +61,12 @@ class MainActivity : AppCompatActivity() {
 
     // ───────────────── Control Mode ─────────────────
     private lateinit var gameMode: String
-    private lateinit var tiltDetector: TiltDetector
+    private var tiltDetector: TiltDetector? = null
+    private var controlsEnabled = true
 
     // ───────────────── Animation ─────────────────
-    private val pikachuFrames = listOf(
-        R.drawable.pikachu_walk001,
-        R.drawable.pikachu_walk002,
-        R.drawable.pikachu_walk001,
-        R.drawable.pikachu_walk004
-    )
     private var pikachuFrameIndex = 0
-
+    private var playerVisible = true
     private var hasNavigated = false
 
     // ───────────────── Lifecycle ─────────────────
@@ -100,16 +100,11 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         resumeGame()
-
-        if (gameMode == Constants.GAME_MODE.TILT) {
-            tiltDetector.start()
-        }
     }
 
     override fun onPause() {
         super.onPause()
         pauseGame()
-        tiltDetector.stop()
     }
 
     // ───────────────── Setup ─────────────────
@@ -170,12 +165,16 @@ class MainActivity : AppCompatActivity() {
         btnRight.visibility = View.VISIBLE
 
         btnLeft.setOnClickListener {
+            if (!controlsEnabled) return@setOnClickListener
+
             gameManager.movePlayerLeft()
             checkDamage()
             refreshUI()
         }
 
         btnRight.setOnClickListener {
+            if (!controlsEnabled) return@setOnClickListener
+
             gameManager.movePlayerRight()
             checkDamage()
             refreshUI()
@@ -191,28 +190,28 @@ class MainActivity : AppCompatActivity() {
             this,
             object : TiltCallback {
 
-            override fun onTiltLeft() {
-                gameManager.movePlayerLeft()
-                checkDamage()
-                refreshUI()
-            }
+                override fun onTiltLeft() {
+                    gameManager.movePlayerLeft()
+                    checkDamage()
+                    refreshUI()
+                }
 
-            override fun onTiltRight() {
-                gameManager.movePlayerRight()
-                checkDamage()
-                refreshUI()
-            }
+                override fun onTiltRight() {
+                    gameManager.movePlayerRight()
+                    checkDamage()
+                    refreshUI()
+                }
 
-            override fun onTiltForward() {
-                currentDelay =
-                    (currentDelay - DELAY_STEP).coerceAtLeast(MIN_DELAY)
-            }
+                override fun onTiltForward() {
+                    currentDelay =
+                        (currentDelay - DELAY_STEP).coerceAtLeast(MIN_DELAY)
+                }
 
-            override fun onTiltBackward() {
-                currentDelay =
-                    (currentDelay + DELAY_STEP).coerceAtMost(MAX_DELAY)
-            }
-        })
+                override fun onTiltBackward() {
+                    currentDelay =
+                        (currentDelay + DELAY_STEP).coerceAtMost(MAX_DELAY)
+                }
+            })
     }
 
 
@@ -226,8 +225,6 @@ class MainActivity : AppCompatActivity() {
 
                 gameManager.nextTurn()
                 checkDamage()
-
-                advancePikachuAnimation()
                 refreshUI()
 
                 delay(currentDelay)
@@ -241,12 +238,17 @@ class MainActivity : AppCompatActivity() {
         timerOn = false
         timerJob?.cancel()
         timerJob = null
+        tiltDetector?.stop()
     }
 
     private fun resumeGame() {
         if (!gameManager.isGameOver && !timerOn) {
             startTime = System.currentTimeMillis()
             startTimer()
+        }
+
+        if (gameMode == Constants.GAME_MODE.TILT) {
+            tiltDetector?.start()
         }
     }
 
@@ -257,11 +259,8 @@ class MainActivity : AppCompatActivity() {
 
     // ───────────────── Rendering ─────────────────
     private fun refreshUI() {
-        if (gameManager.isGameOver && !hasNavigated) {
-            hasNavigated = true
-            stopTimer()
-            val finalTime = accumulatedTime + (System.currentTimeMillis() - startTime)
-            changeActivity(gameManager.score, TimeFormatter.formatTime(finalTime))
+        gameManager.consumeCaptureStart()?.let { enemy ->
+            runCaptureSequence(enemy)
             return
         }
 
@@ -285,20 +284,120 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun drawPlayer() {
+        if (!playerVisible) return
+
         grid[Constants.GameConfig.PLAYER_ROW][gameManager.playerCol]
             .setImageResource(pikachuFrames[pikachuFrameIndex])
+
+        pikachuFrameIndex = (pikachuFrameIndex + 1) % pikachuFrames.size
     }
+
 
     private fun drawObjects() {
         for (obj in gameManager.getObjects()) {
-            grid[obj.row][obj.col]
-                .setImageResource(obj.drawableRes)
+            val imageView = grid[obj.row][obj.col]
+
+            when (obj.type) {
+                thrownType.POTION -> {
+                    imageView.setImageResource(obj.drawableRes!!)
+                }
+
+                thrownType.ENEMY -> {
+                    when (obj.state) {
+                        enemyState.MOVE -> {
+                            val frames = obj.animationSet!!.moveFrames
+                            imageView.setImageResource(frames[obj.frameIndex])
+                            obj.frameIndex = (obj.frameIndex + 1) % frames.size
+                        }
+
+                        enemyState.CAPTURE -> {
+                            val frames = obj.animationSet!!.captureFrames
+                            imageView.setImageResource(frames[obj.frameIndex])
+                        }
+
+                        enemyState.RELEASE -> {
+                            imageView.setImageResource(obj.animationSet!!.releaseFrame)
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private fun advancePikachuAnimation() {
-        pikachuFrameIndex = (pikachuFrameIndex + 1) % pikachuFrames.size
+    private fun runCaptureSequence(enemy: thrownObject) {
+        lifecycleScope.launch {
+            enterCaptureMode()
+            playerVisible = false
+
+            // FAST DROP LOOP
+            while (gameManager.fastDropStep()) {
+                refreshUI()
+                delay(30)
+            }
+            refreshUI()
+            delay(30)
+
+            // CAPTURE ANIMATION: use state + frameIndex
+            enemy.state = enemyState.CAPTURE
+            enemy.frameIndex = 0
+
+            // first frame pause
+            refreshUI()
+            delay(300)
+
+            repeat(enemy.captureLoopsRemaining) {
+                val frames = enemy.animationSet!!.captureFrames
+                for (i in frames.indices) {
+                    enemy.frameIndex = i
+                    refreshUI()
+                    if (i == frames.lastIndex) {
+                        if (gameManager.isGameOver && enemy.captureLoopsRemaining == 1)
+                            delay(1000)
+                        else
+                            delay(300)
+                    }
+                    else
+                        delay(50)
+                }
+
+                enemy.captureLoopsRemaining--
+            }
+
+            // Only show RELEASE if player still has lives
+            if (gameManager.lives > 0) {
+                enemy.state = enemyState.RELEASE
+                enemy.frameIndex = 0
+                refreshUI()
+                delay(300)
+            }
+
+            // back to normal
+            enemy.state = enemyState.MOVE
+            playerVisible = true
+            gameManager.finishCapture()
+
+            exitCaptureMode()
+
+            if (gameManager.isGameOver && !hasNavigated) {
+                hasNavigated = true
+                stopTimer()
+                val finalTime = accumulatedTime + (System.currentTimeMillis() - startTime)
+                changeActivity(gameManager.score, TimeFormatter.formatTime(finalTime))
+            }
+        }
     }
+
+
+    private fun enterCaptureMode() {
+        pauseGame()
+        controlsEnabled = false
+    }
+
+    private fun exitCaptureMode() {
+        controlsEnabled = true
+        resumeGame()
+    }
+
 
     private fun updateHearts() {
         for (i in main_IMG_hearts.indices) {
