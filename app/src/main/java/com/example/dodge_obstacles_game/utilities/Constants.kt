@@ -22,7 +22,10 @@ class Constants {
     }
 
     object Timer {
-        const val DELAY: Long = 500L
+        const val DELAY: Long = 500L //default game speed
+        const val MIN_DELAY = 150L // fastest game speed
+        const val MAX_DELAY = 1_000L // slowest game speed
+        const val DELAY_STEP = 100L // tilt speed step
     }
 
     object BundleKeys {

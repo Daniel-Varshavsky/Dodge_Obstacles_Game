@@ -1,54 +1,73 @@
 package com.example.dodge_obstacles_game
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Gravity
-import android.view.View
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textview.MaterialTextView
-import com.example.dodge_obstacles_game.utilities.Constants
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
-import com.example.dodge_obstacles_game.model.leaderboardEntry
-import com.example.dodge_obstacles_game.utilities.SharedPreferencesManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import android.Manifest
-import android.content.pm.PackageManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.dodge_obstacles_game.model.leaderboardEntry
+import com.example.dodge_obstacles_game.utilities.Constants
+import com.example.dodge_obstacles_game.utilities.SharedPreferencesManager
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.gms.location.FusedLocationProviderClient
-
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textview.MaterialTextView
 
 class ScoreActivity : AppCompatActivity() {
 
-
+    /* ───────────────────────── UI REFERENCES ───────────────────────── */
     private lateinit var score_LBL_title: MaterialTextView
-
     private lateinit var score_BTN_newGame: MaterialButton
     private lateinit var score_BTN_back: MaterialButton
 
+    /* ───────────────────────── LOCATION ───────────────────────── */
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var currentLatitude: Double? = null
     private var currentLongitude: Double? = null
 
+    /* ───────────────────────── ACTIVITY LIFECYCLE ───────────────────────── */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_score)
+
+        applySystemInsets()
+        findViews()
+        initViews()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 2001 && resultCode == RESULT_OK) {
+            requestLocation()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1001 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            requestLocation()
+        }
+    }
+
+    /* ───────────────────────── INITIALIZATION ───────────────────────── */
+    private fun applySystemInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        findViews()
-        initViews()
     }
 
     private fun findViews() {
@@ -58,35 +77,40 @@ class ScoreActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        val bundle: Bundle? = intent.extras
-
+        val bundle = intent.extras
         val score = bundle?.getInt(Constants.BundleKeys.SCORE_KEY, 0)
         val timeMillis = bundle?.getString(Constants.BundleKeys.TIME_KEY, "00:00:00")
 
+        displayScore(score, timeMillis)
+        setupButtons()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        requestLocation()
+        showNameDialog(score, timeMillis)
+    }
+
+    /* ───────────────────────── UI HANDLING ───────────────────────── */
+    private fun displayScore(score: Int?, timeMillis: String?) {
         score_LBL_title.text = buildString {
             append("Game Over!\nScore: ")
             append(score)
             append("\nTime: ")
             append(timeMillis)
         }
-        score_BTN_newGame.setOnClickListener { view: View ->
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+    }
+
+    private fun setupButtons() {
+        score_BTN_newGame.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
 
         score_BTN_back.setOnClickListener {
-            val intent = Intent(this, StartActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, StartActivity::class.java))
             finish()
         }
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        requestLocation()
-
-        showNameDialog(score, timeMillis)
     }
 
+    /* ───────────────────────── LOCATION HANDLING ───────────────────────── */
     private fun isLocationEnabled(): Boolean {
         val locationManager = getSystemService(LOCATION_SERVICE) as android.location.LocationManager
         return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) ||
@@ -94,48 +118,27 @@ class ScoreActivity : AppCompatActivity() {
     }
 
     private fun requestEnableGPS() {
-        val locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY, 1000
-        ).build()
-
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
         val settingsRequest = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
             .setAlwaysShow(true)
             .build()
-
         val client = LocationServices.getSettingsClient(this)
 
         client.checkLocationSettings(settingsRequest)
-            .addOnSuccessListener {
-                requestLocation() // GPS is ON
-            }
+            .addOnSuccessListener { requestLocation() }
             .addOnFailureListener { exception ->
                 if (exception is ResolvableApiException) {
-                    try {
-                        exception.startResolutionForResult(this, 2001)
-                    } catch (_: Exception) { }
+                    try { exception.startResolutionForResult(this, 2001) } catch (_: Exception) {}
                 }
             }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == 2001 && resultCode == RESULT_OK) {
-            requestLocation()
-        }
-    }
-
     private fun requestLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1001
-            )
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1001)
             return
         }
 
@@ -144,84 +147,53 @@ class ScoreActivity : AppCompatActivity() {
             return
         }
 
-        fusedLocationClient.getCurrentLocation(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            null
-        ).addOnSuccessListener { location ->
-            location?.let {
-                currentLatitude = it.latitude
-                currentLongitude = it.longitude
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+            .addOnSuccessListener { location ->
+                location?.let {
+                    currentLatitude = it.latitude
+                    currentLongitude = it.longitude
+                }
             }
-        }
     }
 
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1001 &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            requestLocation()
-        }
-    }
-
-
+    /* ───────────────────────── NAME INPUT / LEADERBOARD ───────────────────────── */
     private fun showNameDialog(score: Int?, time: String?) {
-        val input = EditText(this).apply {
-            hint = "Enter your name"
-            maxLines = 1
-        }
-
+        val input = EditText(this).apply { hint = "Enter your name"; maxLines = 1 }
         val gameMode = SharedPreferencesManager.getInstance()
-            .getString(
-                Constants.SP_KEYS.GAME_MODE,
-                Constants.GAME_MODE.BUTTONS_NORMAL
-            )
+            .getString(Constants.SP_KEYS.GAME_MODE, Constants.GAME_MODE.BUTTONS_NORMAL)
 
-        val dialog = MaterialAlertDialogBuilder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
+        val dialog = MaterialAlertDialogBuilder(
+            this,
+            com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered
+        )
             .setTitle("Save Score")
             .setView(input)
             .setCancelable(true)
             .setPositiveButton("Save") { _, _ ->
                 var name = input.text.toString().trim()
-
-                if (name.isEmpty()) {
-                    name = ""
-                }
-                SharedPreferencesManager
-                    .getInstance()
-                    .saveLeaderboardEntry(
-                        gameMode,
-                        leaderboardEntry(
-                            name = name,
-                            score = score,
-                            time = time,
-                            latitude = currentLatitude,
-                            longitude = currentLongitude
-                        )
+                if (name.isEmpty()) name = ""
+                SharedPreferencesManager.getInstance().saveLeaderboardEntry(
+                    gameMode,
+                    leaderboardEntry(
+                        name = name,
+                        score = score,
+                        time = time,
+                        latitude = currentLatitude,
+                        longitude = currentLongitude
                     )
-
+                )
             }
             .setNegativeButton("Cancel", null)
             .show()
 
+        // Center buttons equally
         dialog.apply {
             val positiveButton = getButton(AlertDialog.BUTTON_POSITIVE)
             val negativeButton = getButton(AlertDialog.BUTTON_NEGATIVE)
-
             val layoutParams = positiveButton?.layoutParams as? LinearLayout.LayoutParams
-            layoutParams?.apply {
-                weight = 1f
-                gravity = Gravity.CENTER
-            }
+            layoutParams?.apply { weight = 1f; gravity = Gravity.CENTER }
             positiveButton?.layoutParams = layoutParams
             negativeButton?.layoutParams = layoutParams
         }
     }
-
 }

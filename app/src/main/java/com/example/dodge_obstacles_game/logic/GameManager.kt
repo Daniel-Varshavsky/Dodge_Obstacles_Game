@@ -11,35 +11,42 @@ import kotlin.random.Random
 
 class GameManager(private val lifeCount: Int = 3) {
 
-    var score: Int = 0
+    /* ───────────────────────── CORE GAME STATE ───────────────────────── */
+
+    var score = 0
         private set
 
-    var lives: Int = lifeCount
+    var lives = lifeCount
         private set
 
-    var playerCol: Int = GameConfig.COLS / 2
+    var playerCol = GameConfig.COLS / 2
         private set
 
-    var phase: gamePhase = gamePhase.RUNNING
+    var phase = gamePhase.RUNNING
         private set
 
     private val objects = mutableListOf<thrownObject>()
 
+
+    /* ───────────────────────── TURN FLAGS (UI SIGNALS) ───────────────────────── */
+
     private var damageTakenThisTurn = false
     private var healedThisTurn = false
-
-    private val potionDrawable = R.drawable.potion  // ← change if needed
-
-    private var turnsUntilNextEnemy = Random.nextInt(1, 3)
-    private val potionSpawnChance = 0.15f
-
     private var capturingEnemy: thrownObject? = null
+
+
+    /* ───────────────────────── SPAWNING CONFIG ───────────────────────── */
+
+    private val potionDrawable = R.drawable.potion
+    private val potionSpawnChance = 0.15f
+    private var turnsUntilNextEnemy = Random.nextInt(1, 3)
+
 
     val isGameOver: Boolean
         get() = lives <= 0
 
 
-    /* ---------------- Player movement ---------------- */
+    /* ───────────────────────── PLAYER MOVEMENT ───────────────────────── */
 
     fun movePlayerLeft() {
         if (playerCol > 0) {
@@ -55,95 +62,91 @@ class GameManager(private val lifeCount: Int = 3) {
         }
     }
 
-    /* ---------------- Game loop ---------------- */
+
+    /* ───────────────────────── MAIN GAME LOOP ───────────────────────── */
 
     fun nextTurn() {
         if (phase == gamePhase.CAPTURE) return
 
         score += 10
         spawnObjects()
-
-        val updatedObjects = mutableListOf<thrownObject>()
-
-        for (obj in objects) {
-            obj.row++
-
-            if (obj.row < GameConfig.ROWS) {
-                updatedObjects.add(obj)
-            }
-        }
-
-        objects.clear()
-        objects.addAll(updatedObjects)
-
+        advanceObjects()
         checkPlayerCollision()
     }
 
-    /* ---------------- Spawning ---------------- */
+    private fun advanceObjects() {
+        val updated = mutableListOf<thrownObject>()
+
+        for (obj in objects) {
+            obj.row++
+            if (obj.row < GameConfig.ROWS) updated.add(obj)
+        }
+
+        objects.clear()
+        objects.addAll(updated)
+    }
+
+
+    /* ───────────────────────── OBJECT SPAWNING ───────────────────────── */
 
     private fun spawnObjects() {
         val occupiedCols = mutableSetOf<Int>()
-
         spawnEnemyIfNeeded(occupiedCols)
         spawnPotionIfNeeded(occupiedCols)
     }
 
     private fun spawnEnemyIfNeeded(occupiedCols: MutableSet<Int>) {
-        if (turnsUntilNextEnemy <= 0) {
-            val col = generateFreeColumn(occupiedCols)
+        if (turnsUntilNextEnemy-- > 0) return
 
-            objects.add(
-                thrownObject(
-                    row = 0,
-                    col = col,
-                    type = thrownType.ENEMY,
-                    animationSet = enemyAnimations.ALL.random(),
-                    frameIndex = 0,
-                    captureLoopsRemaining = 0
-                )
+        val col = generateFreeColumn(occupiedCols)
+        objects.add(
+            thrownObject(
+                row = 0,
+                col = col,
+                type = thrownType.ENEMY,
+                animationSet = enemyAnimations.ALL.random()
             )
+        )
 
-            occupiedCols.add(col)
-            turnsUntilNextEnemy = Random.nextInt(1, 3)
-        } else {
-            turnsUntilNextEnemy--
-        }
+        occupiedCols.add(col)
+        turnsUntilNextEnemy = Random.nextInt(1, 3)
     }
 
     private fun spawnPotionIfNeeded(occupiedCols: MutableSet<Int>) {
-        if (Random.nextFloat() < potionSpawnChance) {
-            val col = generateFreeColumn(occupiedCols)
+        if (Random.nextFloat() >= potionSpawnChance) return
 
-            objects.add(
-                thrownObject(
-                    row = 0,
-                    col = col,
-                    drawableRes = potionDrawable,
-                    type = thrownType.POTION
-                )
+        val col = generateFreeColumn(occupiedCols)
+        objects.add(
+            thrownObject(
+                row = 0,
+                col = col,
+                drawableRes = potionDrawable,
+                type = thrownType.POTION
             )
+        )
 
-            occupiedCols.add(col)
-        }
+        occupiedCols.add(col)
     }
 
-    private fun generateFreeColumn(occupiedCols: Set<Int>): Int {
-        val freeCols = (0 until GameConfig.COLS).filterNot { it in occupiedCols }
-        return if (freeCols.isNotEmpty()) freeCols.random()
-        else Random.nextInt(GameConfig.COLS)
-    }
+    private fun generateFreeColumn(occupiedCols: Set<Int>): Int =
+        (0 until GameConfig.COLS)
+            .filterNot { it in occupiedCols }
+            .randomOrNull()
+            ?: Random.nextInt(GameConfig.COLS)
 
-    /* ---------------- Collision handling ---------------- */
+
+    /* ───────────────────────── COLLISION & DAMAGE ───────────────────────── */
 
     private fun checkPlayerCollision() {
-        val collided = objects.filter { it.row == GameConfig.PLAYER_ROW && it.col == playerCol }
+        val collided = objects.filter {
+            it.row == GameConfig.PLAYER_ROW && it.col == playerCol
+        }
 
         for (obj in collided) {
             if (obj.type == thrownType.ENEMY && obj.state == enemyState.CAPTURE) continue
 
             handleCollision(obj)
 
-            // Only remove potions and non-capturing enemies
             if (obj.type == thrownType.POTION || obj.state != enemyState.CAPTURE) {
                 objects.remove(obj)
             }
@@ -159,6 +162,9 @@ class GameManager(private val lifeCount: Int = 3) {
         }
     }
 
+
+    /* ───────────────────────── CAPTURE FLOW ───────────────────────── */
+
     private fun startCapture(enemy: thrownObject) {
         if (phase == gamePhase.CAPTURE) return
 
@@ -167,42 +173,42 @@ class GameManager(private val lifeCount: Int = 3) {
 
         enemy.state = enemyState.CAPTURE
         enemy.frameIndex = 0
-
-        // If the player dies, force 3 capture loops
-        enemy.captureLoopsRemaining = if (lives == 0) 3 else Random.nextInt(0, 3)
+        enemy.captureLoopsRemaining =
+            if (lives == 0) 3 else Random.nextInt(0, 4)
 
         capturingEnemy = enemy
     }
 
-
-    fun fastDropStep(): Boolean {
-        var hasFallingObjects = false
-        val updatedObjects = mutableListOf<thrownObject>()
+    fun fastApproachStep(): Boolean {
+        val updated = mutableListOf<thrownObject>()
+        var hasObjectsRemaining = false
 
         for (obj in objects) {
             if (obj.state == enemyState.CAPTURE) {
-                updatedObjects.add(obj)
+                updated.add(obj)
                 continue
             }
 
             obj.row++
             if (obj.row < GameConfig.ROWS) {
-                updatedObjects.add(obj)
-                hasFallingObjects = true
+                updated.add(obj)
+                hasObjectsRemaining = true
             }
         }
 
         objects.clear()
-        objects.addAll(updatedObjects)
-
+        objects.addAll(updated)
         checkPlayerCollision()
 
-        return hasFallingObjects
+        return hasObjectsRemaining
     }
 
     fun finishCapture() {
         phase = gamePhase.RUNNING
     }
+
+
+    /* ───────────────────────── LIFE MANAGEMENT ───────────────────────── */
 
     private fun takeDamage() {
         if (lives > 0) {
@@ -218,25 +224,17 @@ class GameManager(private val lifeCount: Int = 3) {
         }
     }
 
-    /* ---------------- UI hooks ---------------- */
 
-    fun consumeDamageFlag(): Boolean {
-        val result = damageTakenThisTurn
-        damageTakenThisTurn = false
-        return result
-    }
+    /* ───────────────────────── UI CONSUMPTION HOOKS ───────────────────────── */
 
-    fun consumeHealFlag(): Boolean {
-        val result = healedThisTurn
-        healedThisTurn = false
-        return result
-    }
+    fun consumeDamageFlag(): Boolean =
+        damageTakenThisTurn.also { damageTakenThisTurn = false }
 
-    fun consumeCaptureStart(): thrownObject? {
-        val enemy = capturingEnemy
-        capturingEnemy = null
-        return enemy
-    }
+    fun consumeHealFlag(): Boolean =
+        healedThisTurn.also { healedThisTurn = false }
+
+    fun consumeCaptureStart(): thrownObject? =
+        capturingEnemy.also { capturingEnemy = null }
 
     fun getObjects(): List<thrownObject> = objects.toList()
 }
