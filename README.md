@@ -1,6 +1,6 @@
 # Pikachu Run - Dodge Obstacles Game
 
-A Pokemon-themed endless runner game for Android where you control Pikachu to dodge falling Pokeballs while collecting healing potions. Features multiple difficulty modes, tilt controls, location-based leaderboards, and animated capture sequences.
+A Pokemon-themed endless runner game for Android where you control Pikachu to dodge falling Pokeballs while collecting healing potions. Features multiple difficulty modes, tilt controls, location-based leaderboards, authentic sound effects, and animated capture sequences.
 
 ## 🎮 Game Overview
 
@@ -13,6 +13,7 @@ In Pikachu Run, you control Pikachu on a 9x5 grid as various Pokeballs (Pokeball
 - **Falling Obstacles**: Dodge 4 types of animated Pokeballs with unique movement patterns
 - **Healing Items**: Collect potions to restore lost lives
 - **Capture Sequences**: Experience authentic Pokemon-style capture animations when caught
+- **Audio Feedback**: Immersive sound effects for shaking, captures, and releases
 - **Lives System**: Start with 3 lives, lose one per capture, gain lives from potions
 
 ### 🎮 Control Options
@@ -35,9 +36,13 @@ In Pikachu Run, you control Pikachu on a 9x5 grid as various Pokeballs (Pokeball
 - **Top 10 Rankings**: Best scores preserved per difficulty
 - **Interactive Map**: Click leaderboard entries to view score locations
 
-### 🎨 Visual Features
+### 🎨 Audio-Visual Features
 - **Animated Sprites**: Walking Pikachu animations
 - **Pokeball Animations**: Unique movement and capture sequences for each ball type
+- **Sound Effects**: Authentic Pokemon-style audio feedback
+  - Pokeball shaking sounds during capture sequences
+  - Successful capture confirmation sound
+  - Pokemon release/escape sound
 - **Professional UI**: Material Design components throughout
 - **Themed Layouts**: Pokemon-inspired color schemes and backgrounds
 
@@ -47,6 +52,7 @@ In Pikachu Run, you control Pikachu on a 9x5 grid as various Pokeballs (Pokeball
 - **MainActivity**: Main game loop and rendering engine
 - **GameManager**: Core game logic and state management  
 - **TiltDetector**: Accelerometer-based motion controls
+- **SingleSoundPlayer**: Threaded audio system for Pokemon-style sound effects
 - **LeaderboardActivity**: Score tracking with map integration
 - **Fragment-based UI**: Modular leaderboard and map components
 
@@ -125,25 +131,34 @@ Each game mode maintains its own leaderboard:
 - Material Design UI components
 - Color-coded difficulty indicators
 
+### Audio Design
+- Pokemon-style capture sequence sounds
+- Pokeball shaking audio effects
+- Success and failure audio cues
+- Non-blocking threaded audio playback
+
 ### Animation Details
 - 4-frame Pikachu walking cycle
 - 8-frame Pokeball movement animations  
 - 13-frame capture sequence animations
 - Smooth transitions between game states
+- Synchronized audio-visual feedback
 
-## ⚙️ Technical Implementation
+### Technical Implementation
 
 ### Architecture Patterns
 - **MVVM Components**: Clean separation of concerns
 - **Fragment Architecture**: Modular UI components
 - **Coroutine Management**: Efficient asynchronous operations
 - **Singleton Patterns**: Centralized managers for shared resources
+- **Threaded Audio System**: Non-blocking sound effect playback
 
 ### Performance Optimizations
 - **Object Pooling**: Efficient sprite management
 - **Frame Rate Control**: Consistent 60fps gameplay
 - **Memory Management**: Proper lifecycle handling
 - **Battery Optimization**: Smart sensor management
+- **Audio Threading**: Background sound processing for smooth gameplay
 
 ## 🔧 Configuration
 
