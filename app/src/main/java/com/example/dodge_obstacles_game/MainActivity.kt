@@ -58,6 +58,9 @@ class MainActivity : AppCompatActivity() {
     private var currentCaptureEnemy: thrownObject? = null
     private var inFastApproach = false
 
+    /* ───────────────────────── SOUND PLAYER ───────────────────────── */
+    private lateinit var soundPlayer: SingleSoundPlayer
+
     /* ───────────────────────── ACTIVITY LIFECYCLE ───────────────────────── */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +74,8 @@ class MainActivity : AppCompatActivity() {
 
         startTime = System.currentTimeMillis()
         startTimer()
+
+        soundPlayer = SingleSoundPlayer(this)
     }
 
     override fun onResume() {
@@ -292,18 +297,23 @@ class MainActivity : AppCompatActivity() {
             var startFrame = resumeState?.frameIndex ?: 0
 
             for (loop in 0 until remainingLoops) {
+
+                soundPlayer.playSound(R.raw.sound_shake)
+
                 for (i in startFrame until frames.size) {
                     if (!isActive) return@launch
                     enemy.frameIndex = i
                     refreshUI()
-                    val frameDelay =
-                        if (i == frames.lastIndex) {
-                            if (gameManager.isGameOver && remainingLoops == 1)
-                                1000L
-                            else
-                                300L
-                        } else 50L
-                    delay(frameDelay)
+                    if (i == frames.lastIndex) {
+                        if (gameManager.isGameOver && enemy.captureLoopsRemaining == 1) {
+                            delay(300L)
+                            soundPlayer.playSound(R.raw.sound_capture)
+                            delay(700L)
+                        } else
+                            delay(300L)
+                    }
+                    else
+                        delay(50L)
                 }
                 enemy.captureLoopsRemaining--
                 startFrame = 0
@@ -311,6 +321,7 @@ class MainActivity : AppCompatActivity() {
 
             // RELEASE PHASE
             if (gameManager.lives > 0) {
+                soundPlayer.playSound(R.raw.sound_release)
                 enemy.state = enemyState.RELEASE
                 refreshUI()
                 delay(300)
